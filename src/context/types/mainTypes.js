@@ -1,0 +1,11 @@
+export const SET_LOADING = 'SET_LOADING';
+export const SET_LOADING_FALSE = 'SET_LOADING_FALSE';
+export const SAVE_STATE = 'SAVE_STATE';
+export const LOGIN = 'LOGIN';
+export const GET_ALL_USERS = 'GET_ALL_USERS'
+export const CREATE_USER = 'CREATE_USER';
+export const SELECT_USER = 'SELECT_USER';
+export const CREATE_ORDER = 'CREATE_ORDER';
+export const DELETE_USER = 'DELETE_USER';
+export const FILTER_ORDERS = 'FILTER_ORDERS';
+export const CLEAR_FILTER = 'CLEAR_FILTER';
