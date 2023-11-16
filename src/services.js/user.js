@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000'; // Replace with your actual API URL
-
 // Define API endpoints for user-related operations
 const USER_API = {
   getAllUsers: '/user/users',
@@ -15,7 +13,7 @@ const USER_API = {
 // Function to get all users
 export const getAllUsers = async () => {
   return axios({
-    url: `${API_BASE_URL}${USER_API.getAllUsers}`,
+    url: `${USER_API.getAllUsers}`,
     method: 'GET',
     headers: {
         Authorization: localStorage.getItem('token')
@@ -26,7 +24,7 @@ export const getAllUsers = async () => {
 // Function to create a new user
 export const createUser = async (userData) => {
     return await axios({
-        url: `${API_BASE_URL}${USER_API.createUser}`,
+        url: `${USER_API.createUser}`,
         method: 'POST',
         headers: {
             Authorization: localStorage.getItem('token')
@@ -37,13 +35,13 @@ export const createUser = async (userData) => {
 
 // Function to login a new user
 export const login = async (userData) => {
-    return axios.post(`${API_BASE_URL}${USER_API.login}`, userData);
+    return axios.post(`${USER_API.login}`, userData);
   };
 
 // Function to update a user by ID
 export const updateUser = async (userData) => {
   return await axios({
-    url: `${API_BASE_URL}${USER_API.updateUser}`,
+    url: `${USER_API.updateUser}`,
     method: 'PUT',
     headers: {
         Authorization: localStorage.getItem('token'),
@@ -55,7 +53,7 @@ export const updateUser = async (userData) => {
 // Function to delete a user by ID
 export const deleteUser = async (userId) => {
   return await axios({
-    url: `${API_BASE_URL}${USER_API.deleteUser(userId)}`,
+    url: `${USER_API.deleteUser(userId)}`,
     method: 'DELETE',
     headers: {
         Authorization: localStorage.getItem('token')
@@ -65,7 +63,7 @@ export const deleteUser = async (userId) => {
 
 export const uploadLogo = async (userId, data) => {
   return await axios({
-    url: `${API_BASE_URL}${USER_API.uploadLogo(userId)}`,
+    url: `${USER_API.uploadLogo(userId)}`,
     method: 'POST',
     headers: {
         Authorization: localStorage.getItem('token'),
