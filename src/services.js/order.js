@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const host = 'http://localhost:3000'
+const host = process.env.API_HOST
 // Define API endpoints for order-related operations
 const ORDER_API = {
   getOrdersByUser: `/orders`,
