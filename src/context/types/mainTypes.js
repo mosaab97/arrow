@@ -9,3 +9,6 @@ export const CREATE_ORDER = 'CREATE_ORDER';
 export const DELETE_USER = 'DELETE_USER';
 export const FILTER_ORDERS = 'FILTER_ORDERS';
 export const CLEAR_FILTER = 'CLEAR_FILTER';
+export const SUCCESS = 'success';
+export const ERROR = 'error';
+export const WARN = 'warning';

@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import moment from 'moment'
 import mainContext from './mainContext';
 import MainReducer from './mainReducer';
@@ -17,6 +17,11 @@ const MainState = (props) => {
   };
 
   const [state, dispatch] = useReducer(MainReducer, initialState);
+  const [feedBack, setFeedBack] = useState({
+    open: false,
+    type: 'success',
+    msg: 'success'
+  })
 
   const saveState = async (payload) => {
     dispatch({
@@ -37,6 +42,8 @@ const MainState = (props) => {
         setLoading,
         setLoadingFalse,
         saveState,
+        feedBack, 
+        setFeedBack
       }}
     >
       {props.children}

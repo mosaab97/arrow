@@ -70,7 +70,6 @@ function Login() {
         setError({...error, msg: 'Invalid email or password'}); // Show error message
       }
     } catch (error) {
-      console.error('Login error:', error);
         setError({...error, msg: 'An error occurred while logging in'}); // Show error message
     }
   };
@@ -80,7 +79,7 @@ function Login() {
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
         <Link color="inherit" href="https://mui.com/">
-          Your Website
+          Arrow
         </Link>{' '}
         {new Date().getFullYear()}
         {'.'}

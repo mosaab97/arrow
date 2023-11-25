@@ -1,9 +1,19 @@
-// src/models/orderModule.js
-
 const { db } = require("../services/database");
 
 class Order {
-  constructor({ receiptNumber, receivedDate, deliveryDate, deliveryAddress, fullPrice, deliveryPrice, orderPrice, customerPhone, orderStatus, userId }) {
+  constructor({
+    receiptNumber,
+    receivedDate,
+    deliveryDate,
+    deliveryAddress,
+    fullPrice,
+    deliveryPrice,
+    orderPrice,
+    customerPhone,
+    orderStatus,
+    comment,
+    userId,
+  }) {
     this.receiptNumber = receiptNumber;
     this.receivedDate = receivedDate;
     this.deliveryDate = deliveryDate;
@@ -14,13 +24,13 @@ class Order {
     this.customerPhone = customerPhone;
     this.orderStatus = orderStatus;
     this.userId = userId;
+    this.comment = comment;
   }
 
   static createOrder(order, callback) {
     const query =
-      'INSERT INTO orders (receiptNumber, receivedDate, deliveryDate, deliveryAddress, fullPrice, deliveryPrice, orderPrice, customerPhone, orderStatus, userId) ' +
-      'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-
+      "INSERT INTO orders (receiptNumber, receivedDate, deliveryDate, deliveryAddress, fullPrice, deliveryPrice, orderPrice, customerPhone, orderStatus, userId, comment) " +
+      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     db.query(
       query,
       [
@@ -34,6 +44,7 @@ class Order {
         order.customerPhone,
         order.orderStatus,
         order.userId,
+        order.comment,
       ],
       (err, results) => {
         if (err) {
@@ -44,12 +55,50 @@ class Order {
     );
   }
 
-  static getOrdersByUser(userId, data, callback) {
+  static getOrdersByUser(userId, isAdmin, data, callback) {
     const { startDate, endDate, status } = data;
-    const query = `SELECT * FROM orders WHERE userId = ? 
+    const query = isAdmin
+      ? `SELECT * FROM orders WHERE userId = ? 
       AND (? is NULL OR orderStatus = ?)  
-      AND receivedDate BETWEEN ? AND ?`;
-    db.query(query, [userId, status, status, startDate, endDate], (err, orders) => {
+      AND receivedDate BETWEEN ? AND ?
+      ORDER BY order_id DESC`
+      : `SELECT receiptNumber, receivedDate, deliveryAddress, fullPrice, orderPrice, deliveryPrice, customerPhone, orderStatus 
+      FROM orders WHERE userId = ? 
+      AND (? is NULL OR orderStatus = ?)  
+      AND receivedDate BETWEEN ? AND ?
+      ORDER BY order_id DESC`;
+    db.query(
+      query,
+      [userId, status, status, startDate, endDate],
+      (err, orders) => {
+        if (err) {
+          return callback(err);
+        }
+        callback(null, orders);
+      }
+    );
+  }
+
+  static getAllOrders(data, callback) {
+    const { startDate, endDate, status } = data;
+    const query = `SELECT 
+      order_id,
+      receiptNumber,
+      receivedDate,
+      deliveryDate,
+      deliveryAddress,
+      fullPrice,
+      deliveryPrice,
+      orderPrice,
+      customerPhone,
+      orderStatus,
+      comment,
+      orders.userId,
+      users.displayName
+        FROM orders, users where orders.userId = users.id and (? is NULL OR orderStatus = ?)  
+        AND receivedDate BETWEEN ? AND ?
+        ORDER BY order_id DESC`;
+    db.query(query, [status, status, startDate, endDate], (err, orders) => {
       if (err) {
         return callback(err);
       }
@@ -58,7 +107,7 @@ class Order {
   }
 
   static getOrderById(orderId, callback) {
-    const query = 'SELECT * FROM orders WHERE order_id = ?';
+    const query = "SELECT * FROM orders WHERE order_id = ?";
     db.query(query, [orderId], (err, orders) => {
       if (err) {
         return callback(err);
@@ -71,7 +120,7 @@ class Order {
   }
 
   static updateOrderById(orderId, updatedData, callback) {
-    const query = 'UPDATE orders SET ? WHERE order_id = ?';
+    const query = "UPDATE orders SET ? WHERE order_id = ?";
     db.query(query, [updatedData, orderId], (err, results) => {
       if (err) {
         return callback(err);
@@ -81,7 +130,7 @@ class Order {
   }
 
   static deleteOrderById(orderId, callback) {
-    const query = 'DELETE FROM orders WHERE order_id = ?';
+    const query = "DELETE FROM orders WHERE order_id = ?";
     db.query(query, [orderId], (err, results) => {
       if (err) {
         return callback(err);
@@ -91,7 +140,8 @@ class Order {
   }
 
   static checkIfReceiptNumberExists(receiptNumber, callback) {
-    const query = 'SELECT COUNT(*) AS count FROM orders WHERE receiptNumber = ?';
+    const query =
+      "SELECT COUNT(*) AS count FROM orders WHERE receiptNumber = ?";
     db.query(query, [receiptNumber], (err, results) => {
       if (err) {
         return callback(err);

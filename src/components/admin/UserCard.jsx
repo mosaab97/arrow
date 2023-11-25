@@ -5,19 +5,30 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { useContext } from 'react';
 import MainContext from '../../context/main/mainContext';
-import { DELETE_USER, SELECT_USER } from '../../context/types/mainTypes';
+import { DELETE_USER, ERROR, SELECT_USER, SUCCESS } from '../../context/types/mainTypes';
 import { Button, CardActions } from '@mui/material';
 import { deleteUser } from '../../services.js/user';
 
 export default function UserCard(props) {
     const {displayName, email, address, phoneNumber, userName, id, logo} = props.user
-    const { dispatch, mainState, saveState } = useContext(MainContext);
+    const { dispatch, mainState, setFeedBack } = useContext(MainContext);
 
     const handleDelete = async () => {
-      if(window.confirm('are you sure ?')) {
+      if(window.confirm(`are you sure you want to delete ${displayName}?`)) {
         const res = await deleteUser(id);
         if(res.status === 200) {
           dispatch({type: DELETE_USER, payload: {res: res.data, userId: id, users: mainState.userList}})
+          setFeedBack({
+            type: SUCCESS,
+            msg: 'User Deleted successfully',
+            open: true
+          })
+        } else {
+          setFeedBack({
+            type: ERROR,
+            msg: 'Can not delete user',
+            open: true
+          })
         }
       }
     }
@@ -37,7 +48,7 @@ export default function UserCard(props) {
       />
       <CardContent sx={{ cursor: 'pointer' }} onClick={() => {
             dispatch({type: SELECT_USER, payload: props.user})
-            props.setActivePage('orders')
+            props.setActivePage('Orders')
         }}>
         <Typography gutterBottom variant="h5" component="div">
           {displayName}

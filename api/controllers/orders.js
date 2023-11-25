@@ -1,6 +1,6 @@
 // src/controllers/orderController.js
-const Order = require('../models/orders');
-const { validationResult } = require('express-validator');
+const Order = require("../models/orders");
+const { validationResult } = require("express-validator");
 
 const createOrder = (req, res) => {
   const errors = validationResult(req);
@@ -18,19 +18,19 @@ const createOrder = (req, res) => {
     deliveryPrice,
     orderPrice,
     orderStatus,
-    customerPhone
+    customerPhone,
+    comment,
   } = req.body;
 
-  const userId = req.body.userId || req.user.id; // Assuming you have middleware to authenticate the user and add the user ID to the request object
+  const userId = req.body.userId || req.user.id;
 
   Order.checkIfReceiptNumberExists(receiptNumber, (err, exists) => {
-    console.log(err)
     if (err) {
-      return res.status(500).json({ error: 'Error checking receipt number' });
+      return res.status(500).json({ error: "Error checking receipt number" });
     }
-    
+
     if (exists) {
-      return res.status(400).json({ error: 'Receipt number already exists' });
+      return res.status(400).json({ error: "Receipt number already exists" });
     }
 
     const newOrder = new Order({
@@ -43,25 +43,43 @@ const createOrder = (req, res) => {
       orderPrice,
       orderStatus,
       customerPhone,
+      comment,
       userId,
     });
-
     Order.createOrder(newOrder, (err, result) => {
       if (err) {
-        console.log(err)
-        return res.status(500).json({ error: 'Error creating order' });
+        return res.status(500).json({ error: "Error creating order" });
       }
-      res.status(201).json({ message: 'Order created successfully', orderId: result.insertId });
+      res.status(201).json({
+        message: "Order created successfully",
+        orderId: result.insertId,
+      });
     });
   });
 };
 
 const getOrders = (req, res) => {
-    const userId = req.query.userId || req.user.userId; 
+  const userId = req.query.userId || req.user.userId;
+  const isAdmin = req.user.userRole === "admin";
 
-  Order.getOrdersByUser(userId, req.query, (err, orders) => {
+  Order.getOrdersByUser(userId, isAdmin, req.query, (err, orders) => {
     if (err) {
-      return res.status(500).json({ error: 'Error fetching orders' });
+      return res.status(500).json({ error: "Error fetching orders" });
+    }
+    let fullDeliveryPrice = 0
+    const ordersWithoutDeliveryPrice = orders.map(order => {
+      fullDeliveryPrice += parseFloat(order.deliveryPrice);
+      !isAdmin && delete order.deliveryPrice;
+      return order
+    })
+    res.status(200).json({ orders: ordersWithoutDeliveryPrice, fullDeliveryPrice});
+  });
+};
+
+const getAllOrders = (req, res) => {
+  Order.getAllOrders(req.query, (err, orders) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching orders" });
     }
     res.status(200).json(orders);
   });
@@ -72,10 +90,10 @@ const getOrder = (req, res) => {
 
   Order.getOrderById(orderId, (err, order) => {
     if (err) {
-      return res.status(500).json({ error: 'Error fetching order' });
+      return res.status(500).json({ error: "Error fetching order" });
     }
     if (!order) {
-      return res.status(404).json({ error: 'Order not found' });
+      return res.status(404).json({ error: "Order not found" });
     }
     res.status(200).json(order);
   });
@@ -93,30 +111,37 @@ const updateOrder = (req, res) => {
 
   // Check if the receiptNumber already exists for a different order
   if (updatedData.receiptNumber) {
-    Order.checkIfReceiptNumberExists(updatedData.receiptNumber, (err, exists) => {
-      if (err) {
-        return res.status(500).json({ error: 'Error checking receipt number' });
-      }
-
-      if (exists) {
-        return res.status(400).json({ error: 'Receipt number already exists' });
-      }
-
-      // Update the order
-      Order.updateOrderById(orderId, updatedData, (err, result) => {
+    Order.checkIfReceiptNumberExists(
+      updatedData.receiptNumber,
+      (err, exists) => {
         if (err) {
-          return res.status(500).json({ error: 'Error updating order' });
+          return res
+            .status(500)
+            .json({ error: "Error checking receipt number" });
         }
-        res.status(200).json({ message: 'Order updated successfully' });
-      });
-    });
+
+        if (exists) {
+          return res
+            .status(400)
+            .json({ error: "Receipt number already exists" });
+        }
+
+        // Update the order
+        Order.updateOrderById(orderId, updatedData, (err, result) => {
+          if (err) {
+            return res.status(500).json({ error: "Error updating order" });
+          }
+          res.status(200).json({ message: "Order updated successfully" });
+        });
+      }
+    );
   } else {
     // Update the order without checking receiptNumber
     Order.updateOrderById(orderId, updatedData, (err, result) => {
       if (err) {
-        return res.status(500).json({ error: 'Error updating order' });
+        return res.status(500).json({ error: "Error updating order" });
       }
-      res.status(200).json({ message: 'Order updated successfully' });
+      res.status(200).json({ message: "Order updated successfully" });
     });
   }
 };
@@ -127,21 +152,28 @@ const deleteOrder = (req, res) => {
   // Check if the order exists before attempting to delete
   Order.getOrderById(orderId, (err, order) => {
     if (err) {
-      return res.status(500).json({ error: 'Error fetching order' });
+      return res.status(500).json({ error: "Error fetching order" });
     }
-    
+
     if (!order) {
-      return res.status(400).json({ error: 'Order does not exist' });
+      return res.status(400).json({ error: "Order does not exist" });
     }
 
     // Order exists, proceed with deletion
     Order.deleteOrderById(orderId, (err, result) => {
       if (err) {
-        return res.status(500).json({ error: 'Error deleting order' });
+        return res.status(500).json({ error: "Error deleting order" });
       }
-      res.status(200).json({ message: 'Order deleted successfully' });
+      res.status(200).json({ message: "Order deleted successfully" });
     });
   });
 };
 
-module.exports = { createOrder, getOrders, getOrder, updateOrder, deleteOrder };
+module.exports = {
+  createOrder,
+  getOrders,
+  getOrder,
+  updateOrder,
+  deleteOrder,
+  getAllOrders,
+};

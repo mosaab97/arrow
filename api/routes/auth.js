@@ -1,6 +1,6 @@
 const express = require('express');
 const { check } = require('express-validator');
-const { signup, login, getAllUsers, updateUser, deleteUser, uploadLogo } = require('../controllers/auth');
+const { signup, login, getAllUsers, updateUser, deleteUser, uploadLogo, updatePassword } = require('../controllers/auth');
 const { authenticateUser, isAdmin } = require('../middleware/auth');
 const { upload } = require('../middleware/imageUpload');
 
@@ -17,8 +17,7 @@ router.post(
       check('password').isLength({ min: 6 }),
       check('displayName').isLength({ min: 3 }),
       check('address').isLength({ min: 3 }),
-      check('phoneNumber').isLength({ min: 10 }),
-      // check('logo').isURL(), // Assuming logo is a URL
+      check('phoneNumber').isLength({ min: 1 }),
     ],
     signup
   );
@@ -33,6 +32,16 @@ router.post(
     login,
   );
 
+  router.post(
+    '/updatePassword',
+    [
+      check('newPassword').isLength({ min: 6 }),
+      check('oldPassword').isLength({ min: 1 }),
+      authenticateUser
+    ],
+    updatePassword,
+  );
+
   router.post("/logo/:id", [authenticateUser, isAdmin, upload.single("logo")], uploadLogo);
 
 // Update user route
@@ -43,11 +52,9 @@ router.put(
       check('userId').isNumeric(),
       check('userName').isLength({ min: 3 }),
       check('email').isEmail(),
-      check('password').isLength({ min: 6 }),
       check('displayName').isLength({ min: 3 }),
       check('address').isLength({ min: 3 }),
-      check('phoneNumber').isLength({ min: 10 }),
-      upload.single("logo")
+      check('phoneNumber').isLength({ min: 1 }),
     ],
     updateUser
   );

@@ -11,10 +11,9 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { useState } from 'react';
 
-const pages = ['Orders'];
+const pages = ['Orders', 'Change Password'];
 const settings = ['Logout'];
 
 function Header({setActivePage}) {
@@ -97,7 +96,7 @@ function Header({setActivePage}) {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src={`/${JSON.parse(localStorage.getItem('loggedInUser')).logo}`} />
+                <Avatar alt="Remy Sharp" src={`/${JSON.parse(localStorage.getItem('loggedInUser'))?.logo}`} />
               </IconButton>
             </Tooltip>
             <Menu

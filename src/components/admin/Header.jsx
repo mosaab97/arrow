@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useContext} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,13 +11,14 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import { useState } from 'react';
+import { SELECT_USER } from '../../context/types/mainTypes';
+import MainContext from '../../context/main/mainContext';
 
-const pages = ['Users', 'Sign up', 'Create Order'];
+const pages = ['Users', 'Sign up', 'Create Order', 'All Orders'];
 const settings = ['Profile', 'Logout'];
 
 function Header({setActivePage}) {
+  const { dispatch } = useContext(MainContext);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -79,6 +80,7 @@ function Header({setActivePage}) {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={() => {
+                  dispatch({type: SELECT_USER, payload: null})
                   setActivePage(page)
                   handleCloseNavMenu();
                 }}>
@@ -92,6 +94,7 @@ function Header({setActivePage}) {
               <Button
                 key={page}
                 onClick={() => {
+                    dispatch({type: SELECT_USER, payload: null})
                     setActivePage(page)
                     handleCloseNavMenu()
                 }}
