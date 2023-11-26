@@ -68,7 +68,7 @@ const getOrders = (req, res) => {
     }
     let fullDeliveryPrice = 0
     const ordersWithoutDeliveryPrice = orders.map(order => {
-      if(order.status === 'delivered' || order.status === 'returned after delivery') {
+      if(order.orderStatus === 'delivered' || order.orderStatus === 'returned after delivery') {
         fullDeliveryPrice += parseFloat(order.deliveryPrice);
       }
       !isAdmin && delete order.deliveryPrice;
