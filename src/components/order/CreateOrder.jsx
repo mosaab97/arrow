@@ -23,7 +23,6 @@ import { createOrder } from "../../services.js/order";
 
 const ORDER_STATUS = [
   "received",
-  "in progress",
   "delivered",
   "returned before delivery",
   "returned after delivery",

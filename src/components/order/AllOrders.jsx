@@ -25,7 +25,6 @@ const initialSummary = {
   returnedCount: 0,
   totalReturnedPrice: 0,
   deliveredCount: 0,
-  inProgressCount: 0,
   receivedCount: 0,
 };
 function AllOrders() {
@@ -82,7 +81,6 @@ function AllOrders() {
       let totalFullPrice = 0;
       let totalDeliveryPrice = 0;
       let totalReturnedPrice = 0;
-      let inProgressCount = 0;
       let returnedCount = 0;
       let deliveredCount = 0;
       let receivedCount = 0;
@@ -105,7 +103,6 @@ function AllOrders() {
           totalReturnedPrice += parseFloat(d.orderPrice);
           returnedCount++;
         }
-        if (d.orderStatus === "in progress") inProgressCount++;
         if (d.orderStatus === "received") receivedCount++;
       });
       setSummary({
@@ -115,7 +112,6 @@ function AllOrders() {
         returnedCount: returnedCount,
         totalReturnedPrice: totalReturnedPrice,
         deliveredCount: deliveredCount,
-        inProgressCount: inProgressCount,
         receivedCount: receivedCount,
       });
     };
@@ -211,7 +207,6 @@ function AllOrders() {
                 Number Of Returned/Cancelled Orders
               </TableCell>
               <TableCell align="center">Number Of Delivered Orders</TableCell>
-              <TableCell align="center">Number Of In Progress Orders</TableCell>
               <TableCell align="center">Number Of Received Orders</TableCell>
             </TableRow>
           </TableHead>
@@ -223,7 +218,6 @@ function AllOrders() {
               <TableCell align="center">{summary.totalReturnedPrice}</TableCell>
               <TableCell align="center">{summary.returnedCount}</TableCell>
               <TableCell align="center">{summary.deliveredCount}</TableCell>
-              <TableCell align="center">{summary.inProgressCount}</TableCell>
               <TableCell align="center">{summary.receivedCount}</TableCell>
             </TableRow>
           </TableBody>

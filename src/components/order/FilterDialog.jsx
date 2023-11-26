@@ -19,7 +19,6 @@ import { CLEAR_FILTER, FILTER_ORDERS } from "../../context/types/mainTypes";
 
 const ORDER_STATUS = [
   "received",
-  "in progress",
   "delivered",
   "returned before delivery",
   "returned after delivery",

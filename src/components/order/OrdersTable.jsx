@@ -6,7 +6,7 @@ import {
 import moment from "moment";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+// import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import ThumbUp from "@mui/icons-material/ThumbUp";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import {
@@ -20,7 +20,6 @@ import { ERROR, SUCCESS } from "../../context/types/mainTypes";
 
 const ORDER_STATUS = [
   "received",
-  "in progress",
   "delivered",
   "returned before delivery",
   "returned after delivery",
@@ -141,7 +140,7 @@ const OrdersTable = ({ setReceiptRows, setReport }) => {
           },
           {
             accessorKey: "receivedDate",
-            header: "Recevied Price",
+            header: "Recevied Date",
             size: 80,
             muiEditTextFieldProps: {
               type: "date",
@@ -196,7 +195,7 @@ const OrdersTable = ({ setReceiptRows, setReport }) => {
           },
           {
             accessorKey: "receivedDate",
-            header: "Recevied Price",
+            header: "Recevied Date",
             size: 80,
             muiEditTextFieldProps: {
               type: "date",
@@ -308,14 +307,14 @@ const OrdersTable = ({ setReceiptRows, setReport }) => {
             <DeleteIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title="In Progress">
+        {/* <Tooltip title="In Progress">
           <IconButton
             color="primary"
             onClick={() => handleUpdateStatus(row, "in progress")}
           >
             <LocalShippingIcon />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip title="Delivered">
           <IconButton
             color="success"
