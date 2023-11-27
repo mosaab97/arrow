@@ -27,6 +27,7 @@ const ORDER_STATUS = [
   "returned before delivery",
   "returned after delivery",
   "cancelled",
+  "done"
 ];
 const initOrder = {
   receiptNumber: "",

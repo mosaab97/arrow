@@ -5,7 +5,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const authRoutes = require("./api/routes/auth");
 const orderRoutes = require("./api/routes/orders");
-const { db } = require("./api/services/database");
+const { initialize } = require("./api/services/database");
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ app.get("*", (req, res) => {
 });
 
 const server = app.listen(port, () => {
-  db.connect();
+  initialize();
   console.log(`Server is running on port ${port}`);
 });
 

@@ -22,7 +22,7 @@ const validateOrderCreation = [
     check('deliveryPrice').isDecimal().withMessage('Delivery price must be a valid decimal number'),
     check('orderPrice').isDecimal().withMessage('Order price must be a valid decimal number'),
     check('customerPhone').isLength({ min: 1 }).withMessage('customer phone number is required'),
-    check('orderStatus').isIn(['received', 'delivered', 'returned before delivery', 'returned after delivery', 'cancelled']).withMessage('Invalid order status'),
+    check('orderStatus').isIn(['received', 'delivered', 'returned before delivery', 'returned after delivery', 'cancelled', 'done']).withMessage('Invalid order status'),
   ];
 
 const validateOrderUpdate = [
@@ -34,13 +34,13 @@ const validateOrderUpdate = [
     check('deliveryPrice').optional().isDecimal().withMessage('Delivery price must be a valid decimal number'),
     check('customerPhone').optional().isLength({ min: 1 }).withMessage('customer phone number is required'),
     check('orderPrice').optional().isDecimal().withMessage('Order price must be a valid decimal number'),
-    check('orderStatus').optional().isIn(['received', 'delivered', 'returned before delivery', 'returned after delivery', 'cancelled']).withMessage('Invalid order status'),
+    check('orderStatus').optional().isIn(['received', 'delivered', 'returned before delivery', 'returned after delivery', 'cancelled', 'done']).withMessage('Invalid order status'),
   ];
 
 const validateDateFilters = [
     check('startDate').isLength({ min: 1 }).withMessage('Start date must be a valid date in ISO 8601 format'),
     check('endDate').isLength({ min: 1 }).withMessage('End date must be a valid date in ISO 8601 format'),
-    check('status').optional().isIn(['received', 'delivered', 'returned before delivery', 'returned after delivery', 'cancelled']).withMessage('Invalid order status'),
+    check('status').optional().isIn(['received', 'delivered', 'returned before delivery', 'returned after delivery', 'cancelled', 'done']).withMessage('Invalid order status'),
   ];
 // Create an order route
 router.post('/', authenticateUser, validateOrderCreation, createOrder);

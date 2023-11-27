@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { db } = require("../services/database");
+const { pool, executeQuery } = require("../services/database");
 
 class User {
   constructor({
@@ -30,7 +30,7 @@ class User {
       if (err) {
         return callback(err);
       }
-      db.query(
+      executeQuery(
         query,
         [
           user.userName,
@@ -41,24 +41,23 @@ class User {
           user.phoneNumber,
           user.logo,
         ],
-        (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        }
+        callback
       );
     });
   }
 
   static findByEmail(email, callback) {
     const query = "SELECT * FROM users WHERE email = ?";
-    db.query(query, [email], (err, results) => {
-      if (err) {
-        return callback(err);
+    executeQuery(
+      query,
+      [ email ],
+      (err, results) => {
+        if (err) {
+          return callback(err);
+        }
+        callback(null, results[0]);
       }
-      callback(null, results[0]);
-    });
+    );
   }
 
   static comparePassword(candidatePassword, hashedPassword, callback) {
@@ -77,7 +76,7 @@ class User {
     const query =
       "UPDATE users SET userName = ?, email = ?, displayName = ?, address = ?, phoneNumber = ? WHERE id = ?";
 
-    db.query(
+    pool.query(
       query,
       [userName, email, displayName, address, phoneNumber, userId],
       (err, results) => {
@@ -91,71 +90,58 @@ class User {
 
   static getUserById(userId, callback) {
     const query = "SELECT * FROM users WHERE id = ?";
-    db.query(query, [userId], (err, users) => {
-      if (err) {
-        return callback(err);
+    executeQuery(
+      query,
+      [ userId ],
+      (err, users) => {
+        if (err) {
+          return callback(err);
+        }
+        if (users.length === 0) {
+          return callback(null, null);
+        }
+        callback(null, users[0]);
       }
-      if (users.length === 0) {
-        return callback(null, null);
-      }
-      callback(null, users[0]);
-    });
+    );
   }
 
   static getAllUsers = (req, res) => {
-    // You may want to add authentication and authorization checks here to ensure only authorized users can access this endpoint.
-
     const query =
       "SELECT id, userName, email, displayName, address, phoneNumber, logo FROM users";
-
-    db.query(query, (err, users) => {
-      if (err) {
-        return res.status(500).json({ error: "Error fetching users" });
-      }
-      res.status(200).json({ users });
-    });
+      executeQuery(
+        query,
+        [],
+        (err, users) => {
+          if (err) {
+            return res.status(500).json({ error: "Error fetching users" });
+          }
+          res.status(200).json({ users });
+        }
+      );
   };
 
   static deleteUser(userId, callback) {
     const query = "DELETE FROM users WHERE id = ?";
-    db.query(query, [userId], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+    executeQuery(
+      query,
+      [ userId ],
+      callback
+    );
   }
 
   static uploadLogo(id, logo, callback) {
     const query = "UPDATE users SET logo = ? WHERE id = ?";
 
-    db.query(query, [logo, id], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+    executeQuery(query, [logo, id], callback);
   }
 
   static updatePassword(newPassword, userId, callback) {
-    const query = 'update users set password = ? where id = ?'
+    const query = "update users set password = ? where id = ?";
     bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
       if (err) {
         return callback(err);
       }
-      db.query(
-        query,
-        [
-          hashedPassword,
-          userId
-        ],
-        (err, results) => {
-          if (err) {
-            return callback(err);
-          }
-          callback(null, results);
-        }
-      );
+      executeQuery(query, [hashedPassword, userId], callback);
     });
   }
 }

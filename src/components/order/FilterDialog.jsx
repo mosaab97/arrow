@@ -23,6 +23,7 @@ const ORDER_STATUS = [
   "returned before delivery",
   "returned after delivery",
   "cancelled",
+  "done"
 ];
 
 export default function FilterDialog({ open, setOpen }) {

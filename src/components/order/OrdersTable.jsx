@@ -6,7 +6,7 @@ import {
 import moment from "moment";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-// import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import ThumbUp from "@mui/icons-material/ThumbUp";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import {
@@ -24,6 +24,7 @@ const ORDER_STATUS = [
   "returned before delivery",
   "returned after delivery",
   "cancelled",
+  "done"
 ];
 
 const OrdersTable = ({ setReceiptRows, setReport }) => {
@@ -307,18 +308,18 @@ const OrdersTable = ({ setReceiptRows, setReport }) => {
             <DeleteIcon />
           </IconButton>
         </Tooltip>
-        {/* <Tooltip title="In Progress">
+        <Tooltip title="Delivered">
           <IconButton
             color="primary"
-            onClick={() => handleUpdateStatus(row, "in progress")}
+            onClick={() => handleUpdateStatus(row, "delivered")}
           >
             <LocalShippingIcon />
           </IconButton>
-        </Tooltip> */}
-        <Tooltip title="Delivered">
+        </Tooltip>
+        <Tooltip title="Done">
           <IconButton
             color="success"
-            onClick={() => handleUpdateStatus(row, "delivered")}
+            onClick={() => handleUpdateStatus(row, "done")}
           >
             <ThumbUp />
           </IconButton>

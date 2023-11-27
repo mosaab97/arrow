@@ -62,7 +62,6 @@ const login = (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
     User.comparePassword(password, user.password, (err, isMatch) => {
       if (err) {
         return res.status(500).json({ error: "Error comparing passwords" });

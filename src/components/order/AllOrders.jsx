@@ -85,6 +85,7 @@ function AllOrders() {
       let deliveredCount = 0;
       let receivedCount = 0;
       data.forEach((d) => {
+        //check done status
         if (d.orderStatus === "delivered") {
           totalFullPrice += parseFloat(d.fullPrice);
           deliveredCount++;
@@ -197,17 +198,17 @@ function AllOrders() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell align="center">Total Full Price</TableCell>
-              <TableCell align="center">Total Delivery Price</TableCell>
+              <TableCell align="center">Full Price - delivered</TableCell>
+              <TableCell align="center">Delivery Price </TableCell>
               <TableCell align="center">Total For Clients</TableCell>
               <TableCell align="center">
                 Total Price for Returned/Cancelled Orders{" "}
               </TableCell>
               <TableCell align="center">
-                Number Of Returned/Cancelled Orders
+                # Returned/Cancelled
               </TableCell>
-              <TableCell align="center">Number Of Delivered Orders</TableCell>
-              <TableCell align="center">Number Of Received Orders</TableCell>
+              <TableCell align="center"># Delivered</TableCell>
+              <TableCell align="center"># Received</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

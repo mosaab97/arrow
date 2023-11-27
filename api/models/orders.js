@@ -1,4 +1,4 @@
-const { db } = require("../services/database");
+const { pool, executeQuery } = require("../services/database");
 
 class Order {
   constructor({
@@ -31,7 +31,7 @@ class Order {
     const query =
       "INSERT INTO orders (receiptNumber, receivedDate, deliveryDate, deliveryAddress, fullPrice, deliveryPrice, orderPrice, customerPhone, orderStatus, userId, comment) " +
       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    db.query(
+      executeQuery(
       query,
       [
         order.receiptNumber,
@@ -46,12 +46,7 @@ class Order {
         order.userId,
         order.comment,
       ],
-      (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results);
-      }
+      callback
     );
   }
 
@@ -67,16 +62,7 @@ class Order {
       AND (? is NULL OR orderStatus = ?)  
       AND receivedDate BETWEEN ? AND ?
       ORDER BY order_id DESC`;
-    db.query(
-      query,
-      [userId, status, status, startDate, endDate],
-      (err, orders) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, orders);
-      }
-    );
+    executeQuery(query, [userId, status, status, startDate, endDate], callback);
   }
 
   static getAllOrders(data, callback) {
@@ -98,17 +84,12 @@ class Order {
         FROM orders, users where orders.userId = users.id and (? is NULL OR orderStatus = ?)  
         AND receivedDate BETWEEN ? AND ?
         ORDER BY order_id DESC`;
-    db.query(query, [status, status, startDate, endDate], (err, orders) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, orders);
-    });
+    executeQuery(query, [status, status, startDate, endDate], callback);
   }
 
   static getOrderById(orderId, callback) {
     const query = "SELECT * FROM orders WHERE order_id = ?";
-    db.query(query, [orderId], (err, orders) => {
+    executeQuery(query, [orderId], (err, orders) => {
       if (err) {
         return callback(err);
       }
@@ -121,28 +102,18 @@ class Order {
 
   static updateOrderById(orderId, updatedData, callback) {
     const query = "UPDATE orders SET ? WHERE order_id = ?";
-    db.query(query, [updatedData, orderId], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+    executeQuery(query, [updatedData, orderId], callback);
   }
 
   static deleteOrderById(orderId, callback) {
     const query = "DELETE FROM orders WHERE order_id = ?";
-    db.query(query, [orderId], (err, results) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, results);
-    });
+    executeQuery(query, [orderId], callback);
   }
 
   static checkIfReceiptNumberExists(receiptNumber, callback) {
     const query =
       "SELECT COUNT(*) AS count FROM orders WHERE receiptNumber = ?";
-    db.query(query, [receiptNumber], (err, results) => {
+    executeQuery(query, [receiptNumber], (err, results) => {
       if (err) {
         return callback(err);
       }

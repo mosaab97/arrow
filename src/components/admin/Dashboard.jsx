@@ -25,10 +25,10 @@ function Dashboard() {
             window.location.href = "/";
           }
         } catch (e) {
-          if (e.response.status === 401) {
-            localStorage.clear();
-            window.location.href = "/";
-          }
+          // if (e.response.status === 401) {
+          //   localStorage.clear();
+          //   window.location.href = "/";
+          // }
           setFeedBack({
             type: ERROR,
             msg: "Error fetching users check network and try again",
