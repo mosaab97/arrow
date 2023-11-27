@@ -48,16 +48,12 @@ class User {
 
   static findByEmail(email, callback) {
     const query = "SELECT * FROM users WHERE email = ?";
-    executeQuery(
-      query,
-      [ email ],
-      (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results[0]);
+    executeQuery(query, [email], (err, results) => {
+      if (err) {
+        return callback(err);
       }
-    );
+      callback(null, results[0]);
+    });
   }
 
   static comparePassword(candidatePassword, hashedPassword, callback) {
@@ -75,58 +71,40 @@ class User {
   ) {
     const query =
       "UPDATE users SET userName = ?, email = ?, displayName = ?, address = ?, phoneNumber = ? WHERE id = ?";
-
-    pool.query(
+    executeQuery(
       query,
       [userName, email, displayName, address, phoneNumber, userId],
-      (err, results) => {
-        if (err) {
-          return callback(err);
-        }
-        callback(null, results);
-      }
+      callback
     );
   }
 
   static getUserById(userId, callback) {
     const query = "SELECT * FROM users WHERE id = ?";
-    executeQuery(
-      query,
-      [ userId ],
-      (err, users) => {
-        if (err) {
-          return callback(err);
-        }
-        if (users.length === 0) {
-          return callback(null, null);
-        }
-        callback(null, users[0]);
+    executeQuery(query, [userId], (err, users) => {
+      if (err) {
+        return callback(err);
       }
-    );
+      if (users.length === 0) {
+        return callback(null, null);
+      }
+      callback(null, users[0]);
+    });
   }
 
   static getAllUsers = (req, res) => {
     const query =
       "SELECT id, userName, email, displayName, address, phoneNumber, logo FROM users";
-      executeQuery(
-        query,
-        [],
-        (err, users) => {
-          if (err) {
-            return res.status(500).json({ error: "Error fetching users" });
-          }
-          res.status(200).json({ users });
-        }
-      );
+    executeQuery(query, [], (err, users) => {
+      if (err) {
+        return res.status(500).json({ error: "Error fetching users" });
+      }
+      res.status(200).json({ users });
+    });
   };
 
   static deleteUser(userId, callback) {
     const query = "DELETE FROM users WHERE id = ?";
-    executeQuery(
-      query,
-      [ userId ],
-      callback
-    );
+    executeQuery(query, [userId], callback);
   }
 
   static uploadLogo(id, logo, callback) {
