@@ -34,7 +34,7 @@ function PrintPage({user, state, componentRef, text}) {
                 <TableCell align="center">{row.receivedDate}</TableCell>
                 <TableCell align="center">{row.deliveryAddress}</TableCell>
                 <TableCell align="center">{row.orderPrice}</TableCell>
-                <TableCell align="center">{row.cutomerPhone}</TableCell>
+                <TableCell align="center">{row.customerPhone}</TableCell>
                 <TableCell align="center">{row.orderStatus}</TableCell>
                 {/* <TableCell align="right">{ccyFormat(row.price)}</TableCell> */}
                 </TableRow>
